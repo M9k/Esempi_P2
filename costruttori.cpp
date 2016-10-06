@@ -87,7 +87,12 @@ namespace GlaDOS
 		private:
 		;
 		public:
-		//costruttori di default
+		
+		terminalreality(int a)
+		{
+			;	//l'apoteosi dell'utilità...
+		}
+		
 		friend ostream& operator << (ostream& in, const terminalreality& ogg) //definizione inline perchè sarà usato una volta sola
 		{
 			in << "complimenti, hai stampato una classe vuota. *clap clap* \n";
@@ -121,6 +126,8 @@ int main()
 	cout << "Valore di a6 = " << a6.getval() << '\n';
 	cout << "Valore di a6 = " << a6 << '\n'; //ho definito un operatore di casting ad int, quindi va
 	
-	terminalreality t;
+	
+	//terminalreality t; //ERRATO! ridefinire un costruttore elimina quello senza parametri di default
+	terminalreality t(5);
 	cout << t;
 }
