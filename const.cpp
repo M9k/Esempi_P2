@@ -1,3 +1,21 @@
+/*
+	`7MMM.     ,MMF'        `7MM      
+	  MMMb    dPMM            MM      
+	  M YM   ,M MM  .d*"*bg.  MM  ,MP'
+	  M  Mb  M' MM 6MP    Mb  MM ;Y   
+	  M  YM.P'  MM YMb    MM  MM;Mm   
+	  M  `YM'   MM  `MbmmdM9  MM `Mb. 
+	.JML. `'  .JMML.     .M'.JMML. YA.
+					   .d9            
+					 m"'        Mirco Cailotto
+-
+-				 
+	Note:
+	Con "nell'indirizzo" si intende l'indirizzo dove il costruttore "opera", cioè l'allocazione in memoria dell'istanza della classe,
+	notare se l'indirizzo cresce o decresce per capire in che segmento di memoria operiamo.
+	Il file è mio, i nomi li scelgo io (si, non voglio usare pippo e pluto o foo e bar).
+*/
+
 #include <iostream>
 
 using std::cout;
@@ -20,6 +38,7 @@ class pwned
 	//pwned qualcosa5(pwned& const a) { cout << "qualcosa\n"; return a;} //ERRATO ANCHE DICHIARARLO!
 	//un alias è SEMPRE costante, non può cambiare l'oggetto indicato, semmai punta a qualcosa di variabile o costante
 	//TIPS: const agisce sempre sull'elemento a sinistra, se non c'è nulla agisce su quello a destra
+	//ad esempio nella riga 36 agisce su pwned, nella 38 su &.
 };
 
 int pwned::getval() const { return x; }
