@@ -125,6 +125,9 @@ int main()
 	shodan a6(a5);
 	cout << "Valore di a6 = " << a6.getval() << '\n';
 	cout << "Valore di a6 = " << a6 << '\n'; //ho definito un operatore di casting ad int, quindi va
+	cout << "a6:\n";
+	shodan a7 = a1;
+	cout << "Valore di a7 = " << a7.getval() << '\n';
 	
 	
 	//terminalreality t; //ERRATO! ridefinire un costruttore elimina quello senza parametri di default
