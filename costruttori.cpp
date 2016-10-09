@@ -31,7 +31,7 @@ namespace GlaDOS
 		
 		public:
 		shodan(); //altrimenti di default
-		shodan(int);
+		shodan(int); //explicit per impedire l'utilizzo nella riga 115
 		shodan& operator = (const shodan&); //i tipi const & saranno spiegati più avanti
 		int getval() const; //const verrà spiegato più avanti
 		shodan(const shodan&); //altrimenti di default
