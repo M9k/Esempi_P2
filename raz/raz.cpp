@@ -69,13 +69,10 @@ raz raz::operator * (const raz& r) const
 {
 	if((sign && r.sign) || (!sign && !r.sign))
 	{
-		int n = num*r.num;
-		int d = den*r.den;
-		return raz(n,d); //il costruttore si impegnerà a ridurli a numeri primi -> chiamo il costruttore con due int
+		//ATTENZIONE: apparentemente senza il cast non funzionava, non invocava il costruttore corretto
+		return raz(num*r.num,static_cast<int>(den*r.den)); //il costruttore si impegnerà a ridurli a numeri primi -> chiamo il costruttore con due int
 	}
-	int n = 0-num*r.num;
-	int d = den*r.den;
-	return raz(n,d);
+	return raz(0-num*r.num,den*r.den);
 }
 raz::operator double() const
 {
