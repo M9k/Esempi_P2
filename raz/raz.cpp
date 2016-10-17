@@ -61,9 +61,7 @@ raz raz::operator + (const raz& r) const
 		n2 = r.num;
 	else
 		n2 = 0-r.num;
-	int n = (n2*den)+(r.den*n1);
-	int d = den*r.den;
-	return raz(n, d); //il costruttore si impegnerà a ridurli a numeri primi -> chiamo il costruttore con due int
+	return raz((n2*den)+(r.den*n1), static_cast<int>(den*r.den)); //il costruttore si impegnerà a ridurli a numeri primi -> chiamo il costruttore con due int
 }
 raz raz::operator * (const raz& r) const
 {
