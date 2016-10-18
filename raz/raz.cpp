@@ -40,7 +40,7 @@ raz::raz(const int& n, const int& d)
 		prim();	//li rende primi tra loro
 	}
 }
-raz::raz(const bool& b, const unsigned int& n, const unsigned int& d=1):sign(b), num(n), den(d) {prim();};
+raz::raz(const bool& b, const unsigned int& n, const unsigned int& d):sign(b), num(n), den(d) {prim();};
 raz raz::inverti() const
 {
 	if(den)
@@ -63,16 +63,16 @@ raz raz::operator + (const raz& r) const
 		n2 = r.num;
 	else
 		n2 = 0-r.num;
-	return raz((n2*den)+(r.den*n1), static_cast<int>(den*r.den)); //il costruttore si impegnerà a ridurli a numeri primi -> chiamo il costruttore con due int
+	return raz((n2*den)+(r.den*n1), den*r.den); //il costruttore si impegnerà a ridurli a numeri primi -> chiamo il costruttore con due int
 }
 raz raz::operator * (const raz& r) const
 {
 	if((sign && r.sign) || (!sign && !r.sign))
 	{
 		//ATTENZIONE: apparentemente senza il cast non funzionava, non invocava il costruttore corretto
-		return raz(num*r.num,static_cast<int>(den*r.den)); //il costruttore si impegnerà a ridurli a numeri primi -> chiamo il costruttore con due int
+		return raz(num*r.num,den*r.den); //il costruttore si impegnerà a ridurli a numeri primi -> chiamo il costruttore con due int
 	}
-	return raz(0-num*r.num,static_cast<int>(den*r.den));
+	return raz(0-num*r.num,den*r.den);
 }
 raz::operator double() const
 {
