@@ -105,12 +105,15 @@ raz raz::operator++()
 		num+=den;
 	else
 	{
-		num-=den;
-		if(num<0)
+		int numt = num;
+		numt-=den;
+		if(numt<0)
 		{
 			num=0-num;
 			sign = true;
 		}
+		else
+			num=numt;
 	}
 	return *this;
 }
@@ -128,10 +131,12 @@ std::ostream& raz::operator << (std::ostream& o)
 bool raz::operator==(const raz& r) const
 {
 	if(num == 0 && r.num == 0)
+	{
 		if(den == r.den)
 			return true;
 		else
 			return false;
+	}
 	if(num == r.num && den == r.den && sign == r.sign)
 		return true;
 	return false;
