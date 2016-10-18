@@ -1,6 +1,8 @@
 #include <iostream>
 #include "raz.h"
 
+//C'è qualche errore logico nel file, lo ho scritto alle 1 di notte e quindi probabilmente ho commesso delle sviste nei calcoli
+
 void raz::prim()
 {
 	//euclide
@@ -70,7 +72,7 @@ raz raz::operator * (const raz& r) const
 		//ATTENZIONE: apparentemente senza il cast non funzionava, non invocava il costruttore corretto
 		return raz(num*r.num,static_cast<int>(den*r.den)); //il costruttore si impegnerà a ridurli a numeri primi -> chiamo il costruttore con due int
 	}
-	return raz(0-num*r.num,den*r.den);
+	return raz(0-num*r.num,static_cast<int>(den*r.den));
 }
 raz::operator double() const
 {
@@ -85,12 +87,15 @@ raz& raz::operator++(int)
 		num+=den;
 	else
 	{
-		num-=den;
-		if(num<0)
+		int numt = num;
+		numt-=den;
+		if(numt<0)
 		{
-			num=0-num;
+			num=0-numt;
 			sign = true;
 		}
+		else
+			num=numt;
 	}
 	return *this;
 }
