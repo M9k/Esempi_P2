@@ -11,7 +11,7 @@
 -
 -				 
 	Esercizio: 
-	parte A: trovo l'elemento più presente (in caso di parità, prendo quello più a sinistra)
+	parte A: trovo l'elemento piÃ¹ presente (in caso di paritÃ , prendo quello piÃ¹ a sinistra)
 	parte B: rimuovo tutte le istanze dell'elemento del punto A
 	fatto tutto in modo iterattivo
 */
@@ -28,8 +28,8 @@ void popola(int*a, int d)
 
 int popolare(int*a, int d)
 {
-	//trova l'elemento più popolare (che appare più volte) in a array lungo d
-	//varie soluzioni possibili, questa è quella logicamente più facile, ottimizzabile in vari modi
+	//trova l'elemento piÃ¹ popolare (che appare piÃ¹ volte) in a array lungo d
+	//varie soluzioni possibili, questa Ã¨ quella logicamente piÃ¹ facile, ottimizzabile in vari modi
 	int val = 0;
 	int max = 0;
 	int i, j;
@@ -39,7 +39,7 @@ int popolare(int*a, int d)
 		for(j=i;j<d;j++)
 			if(*(a+i) == *(a+j))
 				cont++;
-		if(cont > max)	//MAGGIORE NON UGUALE, altrimenti prendo il valore più a sinistra
+		if(cont > max)	//MAGGIORE NON UGUALE, altrimenti prendo il valore piÃ¹ a destra
 		{
 			max = cont;
 			val = *(a+i);
@@ -62,7 +62,7 @@ void rimuovi(int*a, int &d, int r)
 			for(j=i;j<d;j++)
 				*(a+j) = *(a+j+1);
 		}
-	//MEMORY LEAK! a è stato dichiarato di d elementi, se ne uso meno ne spreco alcuni, trascurabile per ora
+	//MEMORY LEAK! a Ã¨ stato dichiarato di d elementi, se ne uso meno ne spreco alcuni, trascurabile per ora
 }
 void stampa(int*a, int d)
 {
@@ -79,7 +79,7 @@ int main()
 	int a[d];
 	popola(a,d);
 	//PARTE A
-	int pop = popolare(a, d); //se vuoi anche il numero di istanze passati un puntatore a un intero e assegnalo nella funzione
+	int pop = popolare(a, d); //se coglio anche il numero di istanze mi devo passare un puntatore a un intero e assegnarlo nella funzione
 	cout << "valore piu' popolare: " << pop << '\n';
 	//PARTE B
 	rimuovi(a, d, pop);
