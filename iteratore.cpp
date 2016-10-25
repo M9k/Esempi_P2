@@ -57,7 +57,7 @@ class contenitore::nodo
 class contenitore::iteratore
 {
 	public:
-		iteratore(nodo*);
+		iteratore(nodo* n=0);
 		bool operator == (const iteratore&) const;
 		bool operator != (const iteratore&) const;
 		iteratore& operator ++();
@@ -68,7 +68,7 @@ class contenitore::iteratore
 };
 
 // -- ITERATORE --
-contenitore::iteratore::iteratore(nodo* n = 0):p(n){;}
+contenitore::iteratore::iteratore(nodo* n):p(n){;}
 
 bool contenitore::iteratore::operator == (const iteratore& i) const
 {
@@ -105,7 +105,7 @@ contenitore::nodo::nodo(int i, nodo* n = 0): info(i), next(n) {;}
 
 contenitore::nodo::~nodo()
 {
-	if(next);
+	if(next)
 		delete next;
 	cout << "sto per distruggere il nodo con valore " << info << '\n';
 }
