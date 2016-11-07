@@ -8,37 +8,47 @@
 #endif
 using std::cout;
 using std::cerr;
+using std::ostream;
 
+template<class T> class queueitem;
+template<class T> ostream& operator << (ostream&, const queueitem<T>&);
+template<class T> class queue;
+template<class T> ostream& operator << (ostream&, const queue<T>&);
+
+
+template<class T>
+class queueitem
+{	
+	//friend associato (es: <int> amico di <int>)
+	friend class queue<T>; //ad esempio queue<int> avrà bisogno di accedere unicamente a queueitem<int>, non ha necessità di accedere ad altre queueitem
+	/*
+	//friend non associato
+	Se volevo l'amicizio per qualsiasi istanza di queueitem:
+	template<class Tc>
+	friend class queue; //ATTENZIONE! non queue<Tc>
+	
+	Se volevo l'amicizia con template<class T1, class T2> bool test(C<T1, T2>) scrivevo
+	template<class Tc>
+	friend bool test<Tc> //Tc "sostituisce" qualsiasi sia il tipo di C<T1, T2>
+	
+	Se volevo l'amicizia con una funzione di un'altra classe templatizzata
+	template<class Tc>
+	friend bool classeA<Tc>::funzione();
+	*/
+	
+	private:
+	T val;
+	queueitem* next;
+	queueitem(T, queueitem* n = 0);
+	
+	friend ostream& operator << <T> (ostream&, const queue<T>&);
+	friend ostream& operator << <T> (ostream&, const queueitem<T>&);
+};
+	
 template<class T = int> //default int
 class queue
 {
 	private:
-	template<class Tb>
-	class queueitem
-	{	
-		//friend associato (es: <int> amico di <int>)
-		friend class queue<Tb>; //ad esempio queue<int> avrà bisogno di accedere unicamente a queueitem<int>, non ha necessità di accedere ad altre queueitem
-		/*
-		//friend non associato
-		Se volevo l'amicizio per qualsiasi istanza di queueitem:
-		template<class Tc>
-		friend class queue; //ATTENZIONE! non queue<Tc>
-		
-		Se volevo l'amicizia con template<class T1, class T2> bool test(C<T1, T2>) scrivevo
-		template<class Tc>
-		friend bool test<Tc> //Tc "sostituisce" qualsiasi sia il tipo di C<T1, T2>
-		
-		Se volevo l'amicizia con una funzione di un'altra classe templatizzata
-		template<class Tc>
-		friend bool classeA<Tc>::funzione();
-		*/
-		
-		private:
-		Tb val;
-		queueitem* next;
-		public:
-		queueitem(Tb, queueitem* n = 0);
-	};
 	queueitem<T>* inizio;
 	queueitem<T>* fine;
 	public:
@@ -48,11 +58,12 @@ class queue
 	T preleva();
 	bool vuoto() const;
 	~queue();
+	
+	friend ostream& operator << <T> (ostream&, const queue<T>&);
 };
 
 template<class T>
-template<class Tb>
-queue<T>::queueitem<Tb>::queueitem(Tb v, queueitem* n): val(v), next(n) {}
+queueitem<T>::queueitem(T v, queueitem* n): val(v), next(n) {}
 
 template<class T>
 queue<T>::queue(): inizio(0), fine(0) {}
@@ -108,6 +119,27 @@ queue<T>::~queue()
 		preleva();
 }
 
+
+template<class T>
+ostream& operator <<(ostream& o, const queue<T>& q)
+{
+	o << "Elementi:\n";
+	queueitem<T>* p = q.inizio;
+	while(p != 0)
+	{
+		o << *p;
+		p = p->next;
+	}
+	o << '\n';
+	return o;
+}
+
+template<class T>
+ostream& operator <<(ostream& o, const queueitem<T>& qi)
+{
+	return o << qi.val << ' ';
+}
+
 #endif
 
 //main.cpp
@@ -131,6 +163,7 @@ int main()
 	qint.aggiungi(6);
 	qint.aggiungi(7);
 	qint.aggiungi(8);
+	cout << qint;
 	while(!qint.vuoto())
 		cout << qint.preleva() << ' ';
 	cout << '\n';
