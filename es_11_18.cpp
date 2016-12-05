@@ -23,6 +23,7 @@ class Mp3: public FileAudio
 {
 	private:
 	int bitrate;
+	static int bitratequalita;
 	public:
 	virtual FileAudio* clone() const;
 	virtual bool qualita() const;
@@ -34,6 +35,7 @@ class wav: public FileAudio
 {
 	private:
 	int campionamento;
+	static int campionamentoqualita;
 	bool lossless;
 	public:
 	virtual FileAudio* clone() const;
@@ -43,22 +45,24 @@ class wav: public FileAudio
 };
 
 // -- Mp3 --
+int Mp3::bitratequalita = 192;
 FileAudio* Mp3::clone() const
 {
 	return new Mp3(*this); //costruttore di copia
 }
 bool Mp3::qualita() const
 {
-	return bitrate>=192 ? true : false;
+	return bitrate>=bitratequalita;
 }
 // -- wav --
+int wav::campionamentoqualita = 96;
 FileAudio* wav::clone() const
 {
 	return new wav(*this); //costruttore di copia
 }
 bool wav::qualita() const
 {
-	return campionamento>=96 ? true : false;
+	return campionamento>=campionamentoqualita;
 }
 
 //------------------------------------------------------------------
@@ -68,14 +72,13 @@ class iZod
 	private:
 	class Brano
 	{
-		private:
-		FileAudio* traccia;
 		public:
+		FileAudio* traccia;	//anche pubblica perchè comunque non accessibile dall'estrno di iZod
 		//devo costruire una copia del riferimento passato
 		Brano(FileAudio* tr): traccia(tr->clone()) {}
 		FileAudio* getTraccia() const {return traccia;}
 		//regola del 3
-		Brano(const Brano&);
+		Brano(const Brano& b) : traccia(b.traccia->clone()) {}
 		~Brano();
 		Brano& operator =(const Brano&);
 	};
@@ -88,10 +91,6 @@ class iZod
 };
 
 // -- brano --
-iZod::Brano::Brano(const Brano& b)
-{
-	traccia = b.traccia->clone();	//clona la traccia dell'altro brano
-}
 iZod::Brano::~Brano()
 {
 	delete traccia;
@@ -100,8 +99,8 @@ iZod::Brano& iZod::Brano::operator =(const Brano& b)
 {
 	if(this != &b)
 	{
-		if(traccia)
-			delete traccia;
+		//if(traccia)
+		delete traccia;
 		traccia = b.traccia->clone();
 	}
 	return *this;
