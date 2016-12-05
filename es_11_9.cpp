@@ -7,16 +7,18 @@ class car	//astratta
 {
 	private:
 	unsigned int cavalli;
-	static const unsigned int tassa_cv = 500;	//in centesimi
+	static unsigned int tassa_cv;	//in centesimi
 	public:
 	car(unsigned int cv) : cavalli(cv) {}
 	virtual ~car() = 0;	//impone l'astrazione
-	virtual unsigned int tassa() const; //in centesimi
+	virtual unsigned int tassa() const = 0; //in centesimi
+	unsigned int getcavalli() const;
+	unsigned int gettassa_cv() const;
 };
 class diesel: public car
 {
 	private:
-	static const unsigned int tassa_fisso = 10000;
+	static unsigned int tassa_fisso;
 	public:
 	diesel(unsigned int cv):car(cv) {}
 	unsigned int tassa() const; //astratta
@@ -25,7 +27,7 @@ class benzina: public car
 {
 	private:
 	const bool euro5;
-	static const unsigned int tassa_detrazione = 5000;
+	static unsigned int tassa_detrazione;
 	public:
 	benzina(unsigned int cv, bool e5): car(cv), euro5(e5) {}
 	unsigned int tassa() const; //astratta
@@ -44,20 +46,27 @@ class ACI
 
 // -- car --
 car::~car() {}
-unsigned int car::tassa() const
+unsigned int car::tassa_cv = 500;
+unsigned int car::getcavalli() const
 {
-	return tassa_cv*cavalli;
+	return cavalli;
+}
+unsigned int car::gettassa_cv() const
+{
+	return tassa_cv;
 }
 // -- diesel --
+unsigned int diesel::tassa_fisso = 10000;
 unsigned int diesel::tassa() const
 {
-	return car::tassa()+tassa_fisso;	//secondo la logica che è la tassa di una auto con 100€ extra
+	return (car::getcavalli() * car::gettassa_cv())+tassa_fisso;
 }
 
 // -- benzina --
+unsigned int benzina::tassa_detrazione = 5000;
 unsigned int benzina::tassa() const
 {
-	return euro5 ? car::tassa()-tassa_detrazione : car::tassa();
+	return euro5 ? (car::getcavalli() * car::gettassa_cv())-tassa_detrazione : (car::getcavalli() * car::gettassa_cv());
 }
 // -- ACI --
 void ACI::aggiungi(car* c)
