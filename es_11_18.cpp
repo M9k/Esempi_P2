@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <typeinfo>
 
 using std::cout;
 using std::vector;
@@ -17,6 +18,7 @@ class FileAudio
 	virtual ~FileAudio() {} //per evitare leak di memoria
 	FileAudio(string t, double d) : titolo(t), dimensione(d) {}
 	double getDimensione() const {return dimensione;}
+	virtual bool operator == (const FileAudio&) const;
 };
 
 class Mp3: public FileAudio
@@ -29,6 +31,7 @@ class Mp3: public FileAudio
 	virtual bool qualita() const;
 	Mp3(string t, int b, double d=0): FileAudio(t, d), bitrate(b) {}
 	int getBitrate() const {return bitrate;}
+	bool operator == (const FileAudio&) const;
 };
 
 class wav: public FileAudio
@@ -42,8 +45,14 @@ class wav: public FileAudio
 	virtual bool qualita() const;
 	wav(string t, int c, double d, bool ll=false): FileAudio(t, d), campionamento(c), lossless(ll) {}
 	bool is_lossless() const {return lossless;}
+	bool operator == (const FileAudio&) const;
 };
 
+// -- FileAudio
+bool FileAudio::operator == (const FileAudio& f) const
+{
+	return titolo == f.titolo && dimensione == f.dimensione;
+}
 // -- Mp3 --
 int Mp3::bitratequalita = 192;
 FileAudio* Mp3::clone() const
@@ -53,6 +62,10 @@ FileAudio* Mp3::clone() const
 bool Mp3::qualita() const
 {
 	return bitrate>=bitratequalita;
+}
+bool Mp3::operator == (const FileAudio& f) const
+{
+	return FileAudio::operator == (f) && typeid(Mp3) == typeid(f) && bitrate == dynamic_cast<const Mp3*>(&f)->bitrate;
 }
 // -- wav --
 int wav::campionamentoqualita = 96;
@@ -65,6 +78,10 @@ bool wav::qualita() const
 	return campionamento>=campionamentoqualita;
 }
 
+bool wav::operator == (const FileAudio& f) const
+{
+	return FileAudio::operator == (f) && typeid(wav) == typeid(f) && campionamento == dynamic_cast<const wav*>(&f)->campionamento && lossless == dynamic_cast<const wav*>(&f)->lossless;
+}
 //------------------------------------------------------------------
 
 class iZod
@@ -76,7 +93,6 @@ class iZod
 		FileAudio* traccia;	//anche pubblica perchè comunque non accessibile dall'estrno di iZod
 		//devo costruire una copia del riferimento passato
 		Brano(FileAudio* tr): traccia(tr->clone()) {}
-		FileAudio* getTraccia() const {return traccia;}
 		//regola del 3
 		Brano(const Brano& b) : traccia(b.traccia->clone()) {}
 		~Brano();
@@ -109,9 +125,9 @@ iZod::Brano& iZod::Brano::operator =(const Brano& b)
 vector<Mp3> iZod::mp3(double dim, int br) const
 {
 	vector<Mp3> ret;
-	for(vector<Brano>::const_iterator i = lista.begin();i != lista.end();i++)
+	for(vector<Brano>::const_iterator i = lista.begin();i != lista.end();++i)
 	{
-		if(const Mp3* m = dynamic_cast<Mp3*>((*i).getTraccia())) //controllo che sia Mp3 O un suo derivato
+		if(const Mp3* m = dynamic_cast<Mp3*>((*i).traccia)) //controllo che sia Mp3 O un suo derivato
 			if((*m).getDimensione() > dim || (*m).getBitrate() > br)
 				ret.push_back(*m);
 	}
@@ -121,18 +137,21 @@ vector<Mp3> iZod::mp3(double dim, int br) const
 vector<FileAudio*> iZod::braniQual() const
 {
 	vector<FileAudio*> ret;
-	for(vector<Brano>::const_iterator i = lista.begin();i != lista.end();i++)
+	for(vector<Brano>::const_iterator i = lista.begin();i != lista.end();++i)
 	{
-		if((*i).getTraccia()->qualita())
+		/* if((*i).traccia->qualita())
 		{
-			if(const wav* w = dynamic_cast<wav*>((*i).getTraccia())) //controllo se è un WAV o derivato
+			if(const wav* w = dynamic_cast<wav*>((*i).traccia)) //controllo se è un WAV o derivato
 			{
 				if(w->is_lossless())
-					ret.push_back((*i).getTraccia());
+					ret.push_back((*i).traccia);
 			}
 			else
-				ret.push_back((*i).getTraccia());
-		}
+				ret.push_back((*i).traccia);
+		} */
+		//just for fun
+		if(((*i).traccia->qualita() && !dynamic_cast<wav*>((*i).traccia)) || ((*i).traccia->qualita() && dynamic_cast<wav*>((*i).traccia) && static_cast<wav*>((*i).traccia)->is_lossless()))
+			ret.push_back((*i).traccia);
 	}
 	return ret;
 }
@@ -140,9 +159,9 @@ vector<FileAudio*> iZod::braniQual() const
 void iZod::insert(Mp3* add)
 {
 	bool trovato = false;
-	for(vector<Brano>::const_iterator i = lista.begin();i != lista.end() && !trovato;i++)
+	for(vector<Brano>::const_iterator i = lista.begin();i != lista.end() && !trovato;++i)
 	{
-		if(add == dynamic_cast<Mp3*>(i->getTraccia())) //se cast non valido restituisce 0, 0 diverso da add
+		if(*add == *(i->traccia)) //se cast non valido restituisce 0, 0 diverso da add
 			trovato = true;
 	}
 	if(!trovato)
