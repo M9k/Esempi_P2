@@ -55,6 +55,5 @@ int main()
 	x.qualcosa3(a); //creo un alias ad a passato come parametro, ma il alias punta a qualcosa di costante, quindi il compiatore sa che a non verrà modificato nel metodo
 	x.qualcosa4(a); //come qualcosa1, solo che sono certo che non sarà modificato > a questo punto tanto vale usare qualcosa3 e risparmiare memoria, ma comunque corretto
 	//x.qualcosa5(a); //vedere sopra
-	
 	return 0;
 }

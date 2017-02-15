@@ -32,9 +32,9 @@ class contenitore
 		public:
 		ogg* p;
 		smartp(ogg * n = 0); //costruttore di default, con un argomento e conversione da ogg* a smartp
-		smartp(const smartp&);
-		~smartp();
-		smartp& operator = (const smartp&);
+		smartp(const smartp&);						//regola del 3
+		~smartp();									//regola del 3
+		smartp& operator = (const smartp&);			//regola del 3
 		bool operator == (const smartp&) const;
 		bool operator != (const smartp&) const;
 		ogg& operator *() const;
